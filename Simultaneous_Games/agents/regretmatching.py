@@ -24,14 +24,37 @@ class RegretMatching(Agent):
         # 
         # TODO: calcular regrets
         #
-        r = g.agent_name_mapping(self.agent) # devuelve el id   
+        for action in range(g.num_actions(self.agent)):
+            g_sim = self.game.clone()
+            actions_sim = actions.copy()
+            actions_sim[self.agent] = action
+            g_sim.step(actions_sim)
+            u[action] = g_sim.reward(self.agent)
+
+        current_u = u[a]
+        print(g.num_actions(self.agent))
+        print(type(g.num_actions(self.agent)))
+        r = {action: u[action] - current_u  for action in range(g.num_actions(self.agent))}
+
         return r
     
     def regret_matching(self):
         #
         # TODO: calcular curr_policy y actualizar sum_policy
         #
-        pass
+        actions = self.game.observe(self.agent)
+        regrets = self.regrets(actions)
+        regrets = np.array([np.maximum(regret, 0.0) for action, regret in enumerate(regrets)])
+        
+        total = regrets.sum()
+
+        if total > 0:
+            self.curr_policy = regrets / total
+        else:
+            self.curr_policy = np.ones(regrets) / len(regrets)
+
+        self.sum_policy += self.curr_policy
+
 
     def update(self) -> None:
         actions = self.game.observe(self.agent)
