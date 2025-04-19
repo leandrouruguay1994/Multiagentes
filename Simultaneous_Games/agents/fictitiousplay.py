@@ -36,16 +36,15 @@ class FictitiousPlay(Agent):
         # TODO: calcular los rewards de agente para cada acción conjunta 
         # Ayuda: usar product(*agents_actions) de itertools para iterar sobre agents_actions
         #
-        agents_actions_dict = {f"agent_{agent}": actions[agent] for agent,actions in enumerate(agents_actions)}
         #print(f"Product_agents_actions: {product(*agents_actions)}")
-        g.step(agents_actions_dict)
-        for actions in product(*agents_actions): # (A1,A2,..,Am) donde Ai es la accion del agente i, todas las combinaciones de acciones.
-            #print(actions)
-            if actions in product(*agents_actions):
-                rewards[actions] = g.reward(self.agent)
-            else:
-                rewards[actions] = 0
-        print(rewards)
+        #action_combinations = product(*[range(self.game.num_actions(agent)) for agent in self.game.agents])
+        
+        for actions in product(*agents_actions):
+            # Crear un nuevo juego para cada combinación de acciones
+            g = self.game.clone()
+            action_dict = {agent: act for agent, act in zip(self.game.agents, actions)}
+            g.step(action_dict)
+            rewards[actions] = g.reward(self.agent)
         return rewards
     
     def get_utility(self):
@@ -56,10 +55,22 @@ class FictitiousPlay(Agent):
         # TODO: calcular la utilidad (valor) de cada acción de agente. 
         # Ayuda: iterar sobre rewards para cada acción de agente
         #
-        for i in range(len(utility)):
-            rewards_action = {action: reward for action, reward in rewards.items() if action[self.game.agent_name_mapping[self.agent]]==i }
-            p_joint_actions = np.prod([self.learned_policy[agent][i] for agent in self.game.agents])
-            utility[i] += p_joint_actions*np.sum(list(rewards_action.values()))
+        # Para cada acción posible del agente
+        for my_action in range(self.game.num_actions(self.agent)):
+            total = 0.0
+            
+            # Para cada combinación de acciones de los otros agentes
+            for action_combination, reward in rewards.items():
+                if action_combination[self.game.agent_name_mapping[self.agent]] == my_action:
+                    # Calcular probabilidad conjunta de las acciones de los otros jugadores
+                    prob = 1.0
+                    for agent, action in zip(self.game.agents, action_combination):
+                        if agent != self.agent:
+                            prob *= self.learned_policy[agent][action]
+                    
+                    total += prob * reward
+            
+            utility[my_action] = total
         return utility
     
     def bestresponse(self):
