@@ -6,12 +6,15 @@ class RegretMatching(Agent):
 
     def __init__(self, game: SimultaneousGame, agent: AgentID, initial=None, seed=None) -> None:
         super().__init__(game=game, agent=agent)
-        if (initial is None):
-          self.curr_policy = np.full(self.game.num_actions(self.agent), 1/self.game.num_actions(self.agent))
+        if initial is None:
+          self.curr_policy = np.ones(self.game.num_actions(self.agent)) / self.game.num_actions(self.agent)
         else:
-          self.curr_policy = initial.copy()
+          self.curr_policy = np.array(initial, dtype=float)
+          self.curr_policy /= self.curr_policy.sum()  # Normalizar
+
         self.cum_regrets = np.zeros(self.game.num_actions(self.agent))
-        self.sum_policy = self.curr_policy.copy()
+        #self.sum_policy = self.curr_policy.copy()
+        self.sum_policy = np.zeros(self.game.num_actions(self.agent))
         self.learned_policy = self.curr_policy.copy()
         self.niter = 1
         np.random.seed(seed=seed)
@@ -32,10 +35,9 @@ class RegretMatching(Agent):
             u[action] = g_sim.reward(self.agent)
 
         current_u = u[a]
-        print(g.num_actions(self.agent))
-        print(type(g.num_actions(self.agent)))
-        r = {action: u[action] - current_u  for action in range(g.num_actions(self.agent))}
-
+        #print(g.num_actions(self.agent))
+        #print(type(g.num_actions(self.agent)))
+        r = u - current_u
         return r
     
     def regret_matching(self):
@@ -51,7 +53,7 @@ class RegretMatching(Agent):
         if total > 0:
             self.curr_policy = regrets / total
         else:
-            self.curr_policy = np.ones(regrets) / len(regrets)
+            self.curr_policy = np.ones_like(self.cum_regrets) / len(self.cum_regrets)
 
         self.sum_policy += self.curr_policy
 
@@ -60,9 +62,12 @@ class RegretMatching(Agent):
         actions = self.game.observe(self.agent)
         if actions is None:
            return
+        
         regrets = self.regrets(actions)
         self.cum_regrets += regrets
+
         self.regret_matching()
+
         self.niter += 1
         self.learned_policy = self.sum_policy / self.niter
 
