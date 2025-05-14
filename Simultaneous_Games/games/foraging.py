@@ -1,4 +1,4 @@
-from base.game import SimultaneousGame, ActionDict
+from base.game import SimultaneousGame, AgentID, ActionDict
 import gymnasium as gym
 from lbforaging.foraging.environment import ForagingEnv, Player, Action
 
@@ -107,7 +107,10 @@ class Foraging(SimultaneousGame):
         # update observations, rewards, terminations, truncations, infos
         for i, agent in enumerate(self.agents):
             self.rewards[agent] = rewards[i]
-            self.observations[agent] = obs[i].copy()
+            self.observations[agent] = {
+                'observation': obs[i].copy(),   # observation of the agent
+                'action': action                # joint action of all agents
+            }
             self.terminations[agent] = done
             self.truncations[agent] = truncated
             self.infos[agent] = info
@@ -119,7 +122,7 @@ class Foraging(SimultaneousGame):
 
     # reset
     def _reset(self, obs: tuple):
-        self.observations = dict(map(lambda agent: (agent, obs[self.agent_name_mapping[agent]]), self.agents))
+        self.observations = dict(map(lambda agent: (agent, {'observation': obs[self.agent_name_mapping[agent]], 'action': None}), self.agents))
         self.rewards = dict(map(lambda agent: (agent, 0), self.agents))
         self.terminations = dict(map(lambda agent: (agent, False), self.agents))
         self.truncations = dict(map(lambda agent: (agent, False), self.agents))
@@ -140,6 +143,24 @@ class Foraging(SimultaneousGame):
         self.current_step = self.env.current_step
         # reset 
         self._reset(obs)
+    
+    # get observation
+    def observe(self, agent: AgentID):
+        # check if agent is valid
+        if agent not in self.agents:
+            raise ValueError(f"Agent {agent} is not valid. Valid agents are: {self.agents}")
+        # get observation
+        observation = self.observations[agent]['observation']
+        return observation
+    
+    # get actions
+    def observe_action(self, agent: AgentID):
+        # check if agent is valid
+        if agent not in self.agents:
+            raise ValueError(f"Agent {agent} is not valid. Valid agents are: {self.agents}")
+        # get action
+        action = self.observations[agent]['action']
+        return action
     
     # render
     def render(self):
