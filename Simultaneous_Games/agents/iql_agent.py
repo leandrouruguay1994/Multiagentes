@@ -35,7 +35,7 @@ class IQLAgent(Agent):
         self.learn = True  # Para controlar si el agente está aprendiendo o no
         
         # Tabla Q (usamos defaultdict para estados no vistos)
-        self.q_table = defaultdict(lambda: np.full(self.game.num_actions(self.agent), self.initial_q))
+        self.q_table = {}
         
         # Estado actual y última acción
         self.current_state = None
@@ -50,7 +50,11 @@ class IQLAgent(Agent):
     
     def reset(self):
         """Resetea el estado del agente para un nuevo episodio"""
-        self.current_state = None
+        self.current_state = self.game.observe(self.agent)
+        current_state_key = self.state_to_key(self.current_state)
+        if current_state_key not in self.q_table:
+            # Inicializa la Q-table para el nuevo estado
+            self.q_table[current_state_key] = np.full(self.game.num_actions(self.agent), self.initial_q)
         self.last_action = None
     
     def state_to_key(self, state):
@@ -59,40 +63,39 @@ class IQLAgent(Agent):
             return None
         
         # Adapta esto según la estructura exacta de tus observaciones
-        if isinstance(state, dict):
-            # Asumiendo que el estado tiene una parte de observación y energía
-            obs_part = tuple(state['observation'].flatten())
-            energy_part = (state['energy'],)
-            return obs_part + energy_part
-        elif isinstance(state, np.ndarray):
-            return tuple(state.flatten())
+        # if isinstance(state, dict):
+        #     # Asumiendo que el estado tiene una parte de observación y energía
+        #     obs = tuple(state['observation'].flatten())
+        #     return obs
+        if isinstance(state, np.ndarray):
+            return tuple(state.astype(np.int32))
         else:
             return tuple(state)
         
-    def _get_reward(self):
-        """Safely handle reward whether it's a list or scalar"""
-        reward = self.game.reward(self.agent)
-        if isinstance(reward, (list, np.ndarray)):
-            print(f"Reward is a list or array: {reward}, {type(reward)}")
-            return float(reward[0])  # Take first element if it's a list
-        return float(reward)
     
     def update(self) -> None:
         """Actualiza la Q-table basada en la última experiencia"""
         if not self.learn or self.current_state is None or self.last_action is None:
             return
-            
+        
         # Obtener el estado actual
         new_state = self.game.observe(self.agent)
-        reward = self._get_reward()  # Use safe reward processing
+        reward = self.game.reward(self.agent)  # Use safe reward processing
         done = self.game.done()
         self.timestep += 1
         
         state_key = self.state_to_key(self.current_state)
-        new_state_key = self.state_to_key(new_state)
-        
+
         # Obtener el valor Q actual
         current_q = self.q_table[state_key][self.last_action]
+
+        new_state_key = self.state_to_key(new_state)
+
+
+        if new_state_key not in self.q_table:
+            # Inicializa la Q-table para el nuevo estado
+            self.q_table[new_state_key] = np.full(self.game.num_actions(self.agent), self.initial_q)
+        
         
         # Calcular el target Q-value
         if done:
@@ -105,7 +108,7 @@ class IQLAgent(Agent):
         self.q_table[state_key][self.last_action] = current_q + self.alpha * (target_q - current_q)
         
         # Actualizar la política basada en la Q-table
-        self.update_policy(state_key)
+        #self.update_policy(state_key)
         
         # Decaimiento de epsilon (puede ser ajustado según max_t)
         self.epsilon = max(
@@ -121,16 +124,18 @@ class IQLAgent(Agent):
         q_values = self.q_table[state_key]
         
         # Política epsilon-greedy
-        best_action = np.argmax(q_values)
+
+        #best_action = np.argmax(q_values)
+        best_action = np.argwhere(q_values == np.max(q_values)).flatten()
         self.curr_policy = np.ones_like(q_values) * (self.epsilon / len(q_values))
-        self.curr_policy[best_action] += (1 - self.epsilon)
+        self.curr_policy[best_action] += (1 - self.epsilon)/ len(q_values)
         
         # Para learned_policy, usamos la política greedy basada en Q-values
         self.learned_policy = np.zeros_like(q_values)
         self.learned_policy[best_action] = 1.0
     
     def action(self):
-        """Selecciona una acción según la política actual"""
+        """Selecciona una acción según la política actual""" 
         self.current_state = self.game.observe(self.agent)
         state_key = self.state_to_key(self.current_state)
         
@@ -142,6 +147,7 @@ class IQLAgent(Agent):
             self.curr_policy = np.ones(self.game.num_actions(self.agent)) / self.game.num_actions(self.agent)
         
         # Seleccionar acción
+        self.curr_policy /= np.sum(self.curr_policy)  # Normalización final
         self.last_action = np.random.choice(len(self.curr_policy), p=self.curr_policy)
         return self.last_action
     
