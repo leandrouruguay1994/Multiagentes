@@ -1,0 +1,53 @@
+_wandb:
+    value:
+        cli_version: 0.19.11
+        code_path: source-mixed_foraging-_Users_martinrizzo_Documents_Master_IA_Si.._leandro_repo_Multiagentes_Simultaneous_Games_MA_Foraging.ipynb
+        m: []
+        python_version: 3.11.11
+        t:
+            "1":
+                - 55
+            "2":
+                - 55
+            "3":
+                - 2
+                - 16
+                - 23
+                - 55
+            "4": 3.11.11
+            "5": 0.19.11
+            "8":
+                - 1
+                - 5
+            "12": 0.19.11
+            "13": darwin-x86_64
+agent_types:
+    value:
+        agent_0: jal
+        agent_1: jal
+game:
+    value: Foraging-5x5-2p-1f-v3
+iql:
+    value:
+        alpha: 0.1
+        epsilon_decay: 0.995
+        gamma: 0.99
+        initial_epsilon: 1
+        initial_q: 0
+        max_t: 10000
+        min_epsilon: 0.01
+        seed: 1
+jal:
+    value:
+        alpha: 0.1
+        epsilon_decay: 0.99999
+        gamma: 0.95
+        initial_epsilon: 1
+        initial_q: 0
+        max_t: 10000
+        min_epsilon: 0.05
+        seed: 1
+train_config:
+    value:
+        episodes: 100
+        iterations: 50
