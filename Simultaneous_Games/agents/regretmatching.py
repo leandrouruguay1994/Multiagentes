@@ -18,6 +18,7 @@ class RegretMatching(Agent):
         self.learned_policy = self.curr_policy.copy()
         self.niter = 1
         np.random.seed(seed=seed)
+        self.learn = True  # Para controlar si el agente está aprendiendo o no
 
     def regrets(self, played_actions: ActionDict) -> dict[AgentID, float]:
         actions = played_actions.copy()
@@ -60,6 +61,8 @@ class RegretMatching(Agent):
 
     def update(self) -> None:
         actions = self.game.observe(self.agent)
+        if self.learn == False:
+           return   
         if actions is None:
            return
         

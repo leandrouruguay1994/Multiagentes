@@ -27,6 +27,7 @@ class FictitiousPlay(Agent):
         #total_count = np.sum(list(self.count.values()))
         for agent in self.game.agents:
             self.learned_policy[agent] = self.count[agent] / np.sum(self.count[agent])
+        self.learn = True  # Para controlar si el agente está aprendiendo o no
 
     def get_rewards(self) -> dict:
         g = self.game.clone()
@@ -84,6 +85,10 @@ class FictitiousPlay(Agent):
      
     def update(self) -> None:
         actions = self.game.observe(self.agent)
+        if self.learn is False:
+            return
+        # Si actions es None, significa que el juego no ha comenzado o el agente no tiene acciones
+        # disponibles. En este caso, no actualizamos la política.
         if actions is None:
             return
         for agent in self.game.agents:
