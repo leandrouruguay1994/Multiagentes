@@ -1,0 +1,16 @@
+{"time":"2025-05-21T15:57:53.869402-03:00","level":"INFO","msg":"stream: starting","core version":"0.19.11","symlink path":"c:\\Users\\landr\\MasterIA\\multiagentes\\Simultaneous_Games\\wandb\\run-20250521_155753-2etzb3gi\\logs\\debug-core.log"}
+{"time":"2025-05-21T15:57:54.2645945-03:00","level":"INFO","msg":"created new stream","id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:54.2645945-03:00","level":"INFO","msg":"stream: started","id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:54.2645945-03:00","level":"INFO","msg":"handler: started","stream_id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:54.2645945-03:00","level":"INFO","msg":"sender: started","stream_id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:54.2645945-03:00","level":"INFO","msg":"writer: Do: started","stream_id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:54.6105223-03:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-21T15:57:54.7397102-03:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-21T15:57:54.7397102-03:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-21T15:57:55.7345658-03:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading output.log","runtime_seconds":0.1596219,"progress":"117B/117B"},{"desc":"uploading wandb-summary.json","runtime_seconds":0.1596219,"progress":"24B/24B"}],"total_operations":2}}
+{"time":"2025-05-21T15:57:56.2415628-03:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-21T15:57:56.5314663-03:00","level":"INFO","msg":"stream: closing","id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:56.5314663-03:00","level":"INFO","msg":"handler: closed","stream_id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:56.5314663-03:00","level":"INFO","msg":"sender: closed","stream_id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:56.5314663-03:00","level":"INFO","msg":"writer: Close: closed","stream_id":"2etzb3gi"}
+{"time":"2025-05-21T15:57:56.5319748-03:00","level":"INFO","msg":"stream: closed","id":"2etzb3gi"}

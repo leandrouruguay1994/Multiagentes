@@ -1,0 +1,17 @@
+{"time":"2025-05-21T16:09:31.4195931-03:00","level":"INFO","msg":"stream: starting","core version":"0.19.11","symlink path":"c:\\Users\\landr\\MasterIA\\multiagentes\\Simultaneous_Games\\wandb\\run-20250521_160931-2tksq5t8\\logs\\debug-core.log"}
+{"time":"2025-05-21T16:09:31.8462908-03:00","level":"INFO","msg":"created new stream","id":"2tksq5t8"}
+{"time":"2025-05-21T16:09:31.8462908-03:00","level":"INFO","msg":"stream: started","id":"2tksq5t8"}
+{"time":"2025-05-21T16:09:31.8462908-03:00","level":"INFO","msg":"handler: started","stream_id":"2tksq5t8"}
+{"time":"2025-05-21T16:09:31.8462908-03:00","level":"INFO","msg":"writer: Do: started","stream_id":"2tksq5t8"}
+{"time":"2025-05-21T16:09:31.8462908-03:00","level":"INFO","msg":"sender: started","stream_id":"2tksq5t8"}
+{"time":"2025-05-21T16:09:32.1611512-03:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-21T16:09:43.3161252-03:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-21T16:09:43.3161252-03:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-21T16:09:44.3274484-03:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-2tksq5t8-final_rewards_summary","runtime_seconds":1.040231},{"desc":"uploading media\\table\\final_rewards_summary_10004_f00e58c37097467a05ec.table.json","runtime_seconds":0.7711513,"progress":"131B/131B"},{"desc":"uploading wandb-summary.json","runtime_seconds":0.7711513,"progress":"9.5KB/9.5KB"},{"desc":"uploading config.yaml","runtime_seconds":0.4088593,"progress":"581B/581B"}],"total_operations":4}}
+{"time":"2025-05-21T16:09:45.9089862-03:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-21T16:10:05.0355507-03:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/rizzo33-universidad-ort-uruguay/comparison_v2/2tksq5t8/file_stream\": write tcp 192.168.1.12:57280->35.186.228.49:443: wsasend: An existing connection was forcibly closed by the remote host."}
+{"time":"2025-05-21T16:10:09.9792624-03:00","level":"INFO","msg":"stream: closing","id":"2tksq5t8"}
+{"time":"2025-05-21T16:10:09.9792624-03:00","level":"INFO","msg":"handler: closed","stream_id":"2tksq5t8"}
+{"time":"2025-05-21T16:10:09.9792624-03:00","level":"INFO","msg":"writer: Close: closed","stream_id":"2tksq5t8"}
+{"time":"2025-05-21T16:10:09.9792624-03:00","level":"INFO","msg":"sender: closed","stream_id":"2tksq5t8"}
+{"time":"2025-05-21T16:10:09.9792624-03:00","level":"INFO","msg":"stream: closed","id":"2tksq5t8"}

@@ -1,0 +1,16 @@
+{"time":"2025-05-21T16:10:13.8497341-03:00","level":"INFO","msg":"stream: starting","core version":"0.19.11","symlink path":"c:\\Users\\landr\\MasterIA\\multiagentes\\Simultaneous_Games\\wandb\\run-20250521_161013-nvhzjf9a\\logs\\debug-core.log"}
+{"time":"2025-05-21T16:10:14.2482377-03:00","level":"INFO","msg":"created new stream","id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:14.2482377-03:00","level":"INFO","msg":"stream: started","id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:14.2488008-03:00","level":"INFO","msg":"writer: Do: started","stream_id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:14.2488008-03:00","level":"INFO","msg":"sender: started","stream_id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:14.2488008-03:00","level":"INFO","msg":"handler: started","stream_id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:14.5551234-03:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-21T16:10:29.1454088-03:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-21T16:10:29.1454088-03:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-21T16:10:30.1565757-03:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-nvhzjf9a-final_rewards_summary","runtime_seconds":1.0502901,"subtasks":[{"desc":"final_rewards_summary.table.json","runtime_seconds":0.2006661,"progress":"580B/580B"}]}],"total_operations":1}}
+{"time":"2025-05-21T16:10:32.0935624-03:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-21T16:10:32.5745321-03:00","level":"INFO","msg":"stream: closing","id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:32.5745321-03:00","level":"INFO","msg":"handler: closed","stream_id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:32.5745321-03:00","level":"INFO","msg":"sender: closed","stream_id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:32.5745321-03:00","level":"INFO","msg":"writer: Close: closed","stream_id":"nvhzjf9a"}
+{"time":"2025-05-21T16:10:32.5752035-03:00","level":"INFO","msg":"stream: closed","id":"nvhzjf9a"}

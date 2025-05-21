@@ -1,0 +1,16 @@
+{"time":"2025-05-21T16:10:34.3330668-03:00","level":"INFO","msg":"stream: starting","core version":"0.19.11","symlink path":"c:\\Users\\landr\\MasterIA\\multiagentes\\Simultaneous_Games\\wandb\\run-20250521_161034-kyioxxbx\\logs\\debug-core.log"}
+{"time":"2025-05-21T16:10:34.7408389-03:00","level":"INFO","msg":"created new stream","id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:34.7408389-03:00","level":"INFO","msg":"stream: started","id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:34.7408389-03:00","level":"INFO","msg":"handler: started","stream_id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:34.7408389-03:00","level":"INFO","msg":"writer: Do: started","stream_id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:34.7408389-03:00","level":"INFO","msg":"sender: started","stream_id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:35.0212668-03:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-21T16:10:46.5242343-03:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-21T16:10:46.5242343-03:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-21T16:10:47.5430029-03:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-kyioxxbx-final_rewards_summary","runtime_seconds":1.0566013,"subtasks":[{"desc":"final_rewards_summary.table.json","runtime_seconds":0.1902935,"progress":"570B/570B"}]}],"total_operations":1}}
+{"time":"2025-05-21T16:10:49.3986547-03:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-21T16:10:51.0046032-03:00","level":"INFO","msg":"stream: closing","id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:51.0046032-03:00","level":"INFO","msg":"handler: closed","stream_id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:51.0046032-03:00","level":"INFO","msg":"writer: Close: closed","stream_id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:51.0046032-03:00","level":"INFO","msg":"sender: closed","stream_id":"kyioxxbx"}
+{"time":"2025-05-21T16:10:51.0051088-03:00","level":"INFO","msg":"stream: closed","id":"kyioxxbx"}

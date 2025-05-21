@@ -1,0 +1,16 @@
+{"time":"2025-05-21T15:33:12.8550438-03:00","level":"INFO","msg":"stream: starting","core version":"0.19.11","symlink path":"c:\\Users\\landr\\MasterIA\\multiagentes\\Simultaneous_Games\\wandb\\run-20250521_153312-pkd7hqwg\\logs\\debug-core.log"}
+{"time":"2025-05-21T15:33:13.3137401-03:00","level":"INFO","msg":"created new stream","id":"pkd7hqwg"}
+{"time":"2025-05-21T15:33:13.3137401-03:00","level":"INFO","msg":"stream: started","id":"pkd7hqwg"}
+{"time":"2025-05-21T15:33:13.3142989-03:00","level":"INFO","msg":"writer: Do: started","stream_id":"pkd7hqwg"}
+{"time":"2025-05-21T15:33:13.3142989-03:00","level":"INFO","msg":"handler: started","stream_id":"pkd7hqwg"}
+{"time":"2025-05-21T15:33:13.3142989-03:00","level":"INFO","msg":"sender: started","stream_id":"pkd7hqwg"}
+{"time":"2025-05-21T15:33:13.6324298-03:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-21T15:34:02.5505623-03:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-21T15:34:02.5505623-03:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-21T15:34:03.5673687-03:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.2967978,"progress":"584B/584B"}],"total_operations":1}}
+{"time":"2025-05-21T15:34:03.7191016-03:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-21T15:34:04.4314955-03:00","level":"INFO","msg":"stream: closing","id":"pkd7hqwg"}
+{"time":"2025-05-21T15:34:04.4314955-03:00","level":"INFO","msg":"handler: closed","stream_id":"pkd7hqwg"}
+{"time":"2025-05-21T15:34:04.4314955-03:00","level":"INFO","msg":"writer: Close: closed","stream_id":"pkd7hqwg"}
+{"time":"2025-05-21T15:34:04.4314955-03:00","level":"INFO","msg":"sender: closed","stream_id":"pkd7hqwg"}
+{"time":"2025-05-21T15:34:04.4314955-03:00","level":"INFO","msg":"stream: closed","id":"pkd7hqwg"}

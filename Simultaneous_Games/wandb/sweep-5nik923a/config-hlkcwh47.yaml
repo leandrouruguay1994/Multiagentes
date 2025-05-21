@@ -1,0 +1,8 @@
+wandb_version: 1
+
+agent_0:
+  value: RegretMatching
+agent_1:
+  value: RandomAgent
+game:
+  value: RPS

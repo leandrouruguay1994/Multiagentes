@@ -1,0 +1,16 @@
+{"time":"2025-05-21T16:08:53.9876322-03:00","level":"INFO","msg":"stream: starting","core version":"0.19.11","symlink path":"c:\\Users\\landr\\MasterIA\\multiagentes\\Simultaneous_Games\\wandb\\run-20250521_160853-dyd5eqkt\\logs\\debug-core.log"}
+{"time":"2025-05-21T16:08:54.4604049-03:00","level":"INFO","msg":"created new stream","id":"dyd5eqkt"}
+{"time":"2025-05-21T16:08:54.4604049-03:00","level":"INFO","msg":"stream: started","id":"dyd5eqkt"}
+{"time":"2025-05-21T16:08:54.4604049-03:00","level":"INFO","msg":"writer: Do: started","stream_id":"dyd5eqkt"}
+{"time":"2025-05-21T16:08:54.4610531-03:00","level":"INFO","msg":"sender: started","stream_id":"dyd5eqkt"}
+{"time":"2025-05-21T16:08:54.4604049-03:00","level":"INFO","msg":"handler: started","stream_id":"dyd5eqkt"}
+{"time":"2025-05-21T16:08:54.6886394-03:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-05-21T16:09:05.0436665-03:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-05-21T16:09:05.0436665-03:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-05-21T16:09:06.0583972-03:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading artifact run-dyd5eqkt-final_rewards_summary","runtime_seconds":1.0516158,"subtasks":[{"desc":"final_rewards_summary.table.json","runtime_seconds":0.1325579,"progress":"577B/577B"}]}],"total_operations":1}}
+{"time":"2025-05-21T16:09:07.2567827-03:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-05-21T16:09:09.7407542-03:00","level":"INFO","msg":"stream: closing","id":"dyd5eqkt"}
+{"time":"2025-05-21T16:09:09.7407542-03:00","level":"INFO","msg":"handler: closed","stream_id":"dyd5eqkt"}
+{"time":"2025-05-21T16:09:09.7407542-03:00","level":"INFO","msg":"writer: Close: closed","stream_id":"dyd5eqkt"}
+{"time":"2025-05-21T16:09:09.7407542-03:00","level":"INFO","msg":"sender: closed","stream_id":"dyd5eqkt"}
+{"time":"2025-05-21T16:09:09.7407542-03:00","level":"INFO","msg":"stream: closed","id":"dyd5eqkt"}
