@@ -4,6 +4,7 @@ from base.game import SimultaneousGame, AgentID, ActionDict
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Optional, Dict, Tuple
+import itertools
 
 @dataclass
 class JALAgentConfig:
@@ -31,10 +32,14 @@ class JALAgent(Agent):
         }
         
         # Historial de estados y acciones
+        agents_actions = [list(game.action_iter(agent)) for agent in game.agents]
         self.current_state = None
-        self.last_joint_action = None
+        self.joint_actions = list(itertools.product(*agents_actions))
         self.timestep = 0
         self.learn = True
+        self.last_action = None
+
+
         
         if self.config.seed is not None:
             np.random.seed(self.config.seed)
@@ -42,19 +47,14 @@ class JALAgent(Agent):
     def reset(self):
         """Resetea el estado del agente para un nuevo episodio"""
         self.current_state = self.game.observe(self.agent)
-        self.last_joint_action = None
+        self.last_action = None
     
     def state_to_key(self, state):
-        """Convierte el estado a una tupla hashable"""
+        """Convierte el estado observado en una clave hashable para la Q-table"""
         if state is None:
-            return "initial"
-        
-        if isinstance(state, np.ndarray):
-            return tuple(state.astype(np.int32).flatten())
-        elif isinstance(state, dict):
-            return tuple(sorted((k, tuple(v) if isinstance(v, np.ndarray) else v) 
-                        for k, v in state.items()))
-        return tuple(state) if isinstance(state, (list, tuple)) else (state,)
+            raise ValueError("El estado no puede ser None.")
+     
+        return tuple(state.astype(np.int32))
     
     def update_opponent_models(self, joint_action: ActionDict):
         """Actualiza los modelos de otros agentes basado en sus acciones"""
@@ -82,6 +82,68 @@ class JALAgent(Agent):
         
         return probs
     
+    def get_true_opponent_policies(self, state):
+        """Obtiene las políticas REALES de los oponentes (en la práctica, esto requiere acceso a sus modelos internos)."""
+        policies = {}
+        for opponent in self.game.agents:
+            if opponent != self.agent:
+                opponent_agent = None
+                # Buscar el agente oponente en la lista de agentes
+                for agent in self.game.agents:
+                    if agent == opponent:
+                        opponent_agent = agent
+                        break
+                
+                if hasattr(opponent_agent, 'policy'):
+                    policies[opponent] = opponent_agent.policy(state)
+                else:
+                    # Fallback: Asumir política uniforme 
+                    policies[opponent] = {a: 1.0 / self.game.num_actions(opponent) 
+                                        for a in range(self.game.num_actions(opponent))}
+        return policies
+    
+    
+    def get_exact_best_response(self, state):
+        """Calcula la best response exacta asumiendo conocimiento de las políticas actuales de los oponentes."""
+        state_key = self.state_to_key(state)
+        my_actions = range(self.game.num_actions(self.agent))
+        best_action = None
+        max_q_value = -np.inf
+
+        # Paso 1: Obtener políticas actuales de los oponentes (requiere acceso real o estimación exacta)
+        opponent_policies = self.get_true_opponent_policies(state)  # Nuevo método crítico
+
+        # Paso 2: Para cada acción propia, calcular el Q-value esperado dado las políticas de los oponentes
+        for my_action in my_actions:
+            expected_q = 0.0
+            # Generar todas las posibles combinaciones de acciones oponentes
+            opponent_actions = [range(self.game.num_actions(opponent)) 
+                              for opponent in self.game.agents if opponent != self.agent]
+            joint_opponent_actions = itertools.product(*opponent_actions)
+
+            for opp_actions in joint_opponent_actions:
+                # Construir la acción conjunta
+                joint_action = {self.agent: my_action}
+                joint_action.update({opp: a for opp, a in zip(
+                    [a for a in self.game.agents if a != self.agent], opp_actions)})
+                joint_action_key = tuple(sorted(joint_action.items()))
+
+                # Calcular probabilidad de esta acción conjunta según políticas de oponentes
+                prob = 1.0
+                for opp, a in zip([a for a in self.game.agents if a != self.agent], opp_actions):
+                    prob *= opponent_policies[opp].get(a, 0.0)
+
+                # Acumular Q-value ponderado por probabilidad
+                expected_q += self.q_table[(state_key, joint_action_key)] * prob
+
+            # Actualizar best action si encontramos un mejor Q-value esperado
+            if expected_q > max_q_value:
+                max_q_value = expected_q
+                best_action = my_action
+
+        return best_action
+
+
     def sample_opponent_actions(self, state):
         """Muestra acciones de otros agentes según sus distribuciones"""
         probs = self.get_opponent_action_probs(state)
@@ -119,28 +181,31 @@ class JALAgent(Agent):
         self.current_state = self.game.observe(self.agent)
         probs, joint_actions = self.get_joint_action_distribution(self.current_state)
         
-        if np.random.random() < self.config.initial_epsilon:
-            # Exploración: selección aleatoria basada en probabilidades conjuntas
-            action_idx = np.random.choice(len(probs), p=probs)
+        if np.random.random() < self.config.initial_epsilon and self.learn:
+             # Exploración: selección aleatoria basada en probabilidades conjuntas
+             action_idx = np.random.choice(len(probs), p=probs)
         else:
-            # Explotación: selección basada en Q-values (sin usar argmax directamente)
-            q_values = [self.q_table[(self.state_to_key(self.current_state), ja)] 
-                       for _, ja in joint_actions]
-            max_q = max(q_values)
-            best_indices = [i for i, q in enumerate(q_values) if q == max_q]
-            action_idx = np.random.choice(best_indices)
+             # Explotación: selección basada en Q-values (sin usar argmax directamente)
+             q_values = [self.q_table[(self.state_to_key(self.current_state), ja)] 
+                        for _, ja in joint_actions]
+             max_q = max(q_values)
+             best_indices = [i for i, q in enumerate(q_values) if q == max_q]
+             action_idx = np.random.choice(best_indices)
         
         chosen_action, self.last_joint_action = joint_actions[action_idx]
+        self.last_action = chosen_action
         return chosen_action
     
     def update(self):
-        """Actualiza Q-values y modelos basados en la última experiencia"""
+        """Actualiza Q-values usando la best response exacta en el target."""
         if not self.learn or self.current_state is None or self.last_joint_action is None:
             return
         
         new_state = self.game.observe(self.agent)
         reward = float(np.array(self.game.reward(self.agent)).item())  # Asegurar float
         done = self.game.done()
+        state_key = self.state_to_key(self.current_state)
+        new_state_key = self.state_to_key(new_state)
         self.timestep += 1
         
         # Actualizar modelo de oponentes
@@ -148,38 +213,42 @@ class JALAgent(Agent):
         joint_action.update(dict(self.last_joint_action[1:]))
         self.update_opponent_models(joint_action)
         
-        state_key = self.state_to_key(self.current_state)
-        joint_action_key = tuple(sorted(joint_action.items()))
-        new_state_key = self.state_to_key(new_state)
-        
-        # Obtener valor Q actual
-        current_q = self.q_table[(state_key, joint_action_key)]
-        
         # Calcular target Q-value
         if done:
             target_q = reward
         else:
+
+            best_action = self.get_exact_best_response(new_state)
+            opponent_policies = self.get_true_opponent_policies(new_state)
             # Obtener mejor Q-value para el nuevo estado
-            max_next_q = -np.inf
-            opponent_probs = self.get_opponent_action_probs(new_state)
-            
-            for my_action in range(self.game.num_actions(self.agent)):
-                joint_action_next = {self.agent: my_action}
-                for agent_id in opponent_probs:
-                    # Tomar la acción más probable del oponente
-                    best_opponent_action = max(opponent_probs[agent_id].items(), key=lambda x: x[1])[0]
-                    joint_action_next[agent_id] = best_opponent_action
-                
-                joint_action_next_key = tuple(sorted(joint_action_next.items()))
-                q_value = self.q_table[(new_state_key, joint_action_next_key)]
-                if q_value > max_next_q:
-                    max_next_q = q_value
+            # Calcular max_next_q
+            max_next_q = 0.0
+            opponent_actions = [
+                range(self.game.num_actions(opponent_id)) 
+                for opponent_id in opponent_policies
+            ]
+            for opp_actions in itertools.product(*opponent_actions):
+                joint_action = {self.agent: best_action}
+                joint_action.update({
+                    opponent_id: action 
+                    for opponent_id, action in zip(opponent_policies.keys(), opp_actions)
+                })
+                prob = np.prod([
+                    policy.get(action, 0.0)
+                    for (opponent_id, action), policy in zip(
+                        zip(opponent_policies.keys(), opp_actions),
+                        opponent_policies.values()
+                    )
+                ])
+                max_next_q += self.q_table.get(
+                    (new_state_key, tuple(sorted(joint_action.items()))), 
+                    0.0
+                ) * prob
             
             target_q = reward + self.config.gamma * max_next_q
-        
-        # Actualizar Q-value
-        self.q_table[(state_key, joint_action_key)] += self.config.alpha * (target_q - current_q)
-        
+            current_q = self.q_table.get((state_key, self.last_joint_action), 0.0)
+            self.q_table[(state_key, self.last_joint_action)] = current_q + self.config.alpha * (target_q - current_q)
+            
         # Decaimiento de epsilon
         self.config.initial_epsilon = max(
             self.config.min_epsilon,

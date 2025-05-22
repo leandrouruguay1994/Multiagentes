@@ -43,8 +43,8 @@ class IQLAgent(Agent):
         self.timestep = 0
         
         # Para compatibilidad con tu interfaz
-        self.curr_policy = np.ones(self.game.num_actions(self.agent)) / self.game.num_actions(self.agent)
-        self.learned_policy = self.curr_policy.copy()
+        #self.curr_policy = np.ones(self.game.num_actions(self.agent)) / self.game.num_actions(self.agent)
+        #self.learned_policy = self.curr_policy.copy()
         
         np.random.seed(config.seed)
     
@@ -52,7 +52,7 @@ class IQLAgent(Agent):
         """Resetea el estado del agente para un nuevo episodio"""
         self.current_state = self.game.observe(self.agent)
         current_state_key = self.state_to_key(self.current_state)
-        if current_state_key not in self.q_table:
+        if current_state_key not in self.q_table and self.learn:
             # Inicializa la Q-table para el nuevo estado
             self.q_table[current_state_key] = np.full(self.game.num_actions(self.agent), self.initial_q)
         self.last_action = None
@@ -60,23 +60,19 @@ class IQLAgent(Agent):
     def state_to_key(self, state):
         """Convierte el estado observado en una clave hashable para la Q-table"""
         if state is None:
-            return None
-        
-        # Adapta esto según la estructura exacta de tus observaciones
-        # if isinstance(state, dict):
-        #     # Asumiendo que el estado tiene una parte de observación y energía
-        #     obs = tuple(state['observation'].flatten())
-        #     return obs
-        if isinstance(state, np.ndarray):
-            return tuple(state.astype(np.int32))
-        else:
-            return tuple(state)
+            raise ValueError("El estado no puede ser None.")
+     
+        return tuple(state.astype(np.int32))
+
         
     
     def update(self) -> None:
         """Actualiza la Q-table basada en la última experiencia"""
-        if not self.learn or self.current_state is None or self.last_action is None:
+        if not self.learn:
+            self.current_state = self.game.observe(self.agent)
             return
+        if self.current_state is None or self.last_action is None:
+            raise ValueError("El agente no ha sido reseteado o no tiene una acción anterior.")
         
         # Obtener el estado actual
         new_state = self.game.observe(self.agent)
@@ -136,19 +132,23 @@ class IQLAgent(Agent):
     
     def action(self):
         """Selecciona una acción según la política actual""" 
-        self.current_state = self.game.observe(self.agent)
+        if self.current_state is None:
+            raise ValueError("El agente no ha sido reseteado o no tiene un estado actual.")
         state_key = self.state_to_key(self.current_state)
-        
+        if self.game.done():
+            raise ValueError("El juego ha terminado. No se puede seleccionar una acción.")
         # Actualizar la política para el estado actual
-        if state_key in self.q_table:
-            self.update_policy(state_key)
+            # Decaimiento de epsilon (puede ser ajustado según max_t)
+        if self.learn and (np.random.rand() < self.epsilon):
+            # Exploración
+            self.last_action = np.random.choice(list(self.game.action_iter(self.agent)))
         else:
-            # Estado no visto, usar política uniforme
-            self.curr_policy = np.ones(self.game.num_actions(self.agent)) / self.game.num_actions(self.agent)
-        
+            # Explotación
+            q_values = self.q_table[state_key]
+            best_action = np.argwhere(q_values == np.max(q_values)).flatten()
+            self.last_action = np.random.choice(best_action)
         # Seleccionar acción
-        self.curr_policy /= np.sum(self.curr_policy)  # Normalización final
-        self.last_action = np.random.choice(len(self.curr_policy), p=self.curr_policy)
+        
         return self.last_action
     
     def policy(self):
