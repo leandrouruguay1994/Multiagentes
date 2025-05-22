@@ -1,8 +1,0 @@
-wandb_version: 1
-
-agent_0:
-  value: FictitiousPlay
-agent_1:
-  value: RandomAgent
-game:
-  value: RPS
