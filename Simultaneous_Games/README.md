@@ -14,6 +14,7 @@ Cada agente tiene su propio archivo de python y estos son:
 * jal_am_agent.py -> Agente con aprendizaje conjunto (JAL-AM)
 * random_agent.py -> Agente aleatorio
 * regretmatching.py -> Agente basado en Regret Matching
+* dumb_agent.py -> Agente dumb que selecciona una serie de acciones en secuencia.
 
 # base
 Define las abstracciones básicas del entorno multiagente:
@@ -37,3 +38,6 @@ Archivo para realizar los analisis en nuestros amibentes de MP, RPS y Blotto, ut
 
 # Archivo Stochastic_Games
 Archivo para realizar los analisis en nuestros amibente de foraging, utilizando los agentes: iql_agent y jal_am_agent.
+
+# Archivo JAL-AM
+Archivo para realizar los analisis en nuestros amibente de foraging el agente jal_am_agent.

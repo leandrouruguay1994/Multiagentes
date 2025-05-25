@@ -3,7 +3,6 @@ import gymnasium as gym
 from lbforaging.foraging.environment import ForagingEnv, Player, Action
 
 # Store a copy of the envirornment
-
 class ForagingCopy():
     def __init__(self, env:ForagingEnv):
 
@@ -56,6 +55,31 @@ class ForagingCopy():
         infos = {}
 
         return obs, infos
+
+def set_custom_state_from_dict(env: ForagingEnv, state_dict: dict):
+    # Set field (comida)
+    field_data = state_dict.get("field")
+    if field_data is not None:
+        field_array = env.unwrapped.field
+        for i in range(len(field_data)):
+            for j in range(len(field_data[i])):
+                field_array[i][j] = field_data[i][j]
+
+    # Set players
+    players_data = state_dict.get("players", [])
+    for i, pdata in enumerate(players_data):
+        if i >= len(env.unwrapped.players):
+            break
+        player = env.unwrapped.players[i]
+        player.position = tuple(pdata.get("position", player.position))
+        player.level = pdata.get("level", player.level)
+        player.score = 0
+        player.reward = 0
+        player.history = []
+        player.current_step = 0
+
+    # Regenerar movimientos válidos
+    env.unwrapped._gen_valid_moves()
 
 class Foraging(SimultaneousGame):
     def __init__(self, config: str | None = None, seed: int | None = None):
@@ -130,18 +154,35 @@ class Foraging(SimultaneousGame):
         self._done = False
         self._truncated = False
 
-    def reset(self, seed: int | None = None, options: dict | None = None):
-        if self.env_copy is None: 
+    # def reset(self, seed: int | None = None, options: dict | None = None):
+    #     if self.env_copy is None: 
+    #         if seed is None:
+    #             seed = self.seed
+    #         # first time - reset the environment and store a copy
+    #         obs, _ = self.env.reset(seed=seed, options=options)
+    #         self.env_copy = ForagingCopy(self.env)
+    #     else:
+    #         # environment exists - restore the initial environment
+    #         obs, _ = self.env_copy.reset(self.env)
+    #     self.current_step = self.env.current_step
+    #     # reset 
+    #     self._reset(obs)
+
+
+
+    def reset(self, seed: int | None = None, options: dict | None = None, custom_state: dict | None = None):
+        if self.env_copy is None:
             if seed is None:
                 seed = self.seed
-            # first time - reset the environment and store a copy
             obs, _ = self.env.reset(seed=seed, options=options)
+            if custom_state:
+                set_custom_state_from_dict(self.env, custom_state)
             self.env_copy = ForagingCopy(self.env)
         else:
-            # environment exists - restore the initial environment
             obs, _ = self.env_copy.reset(self.env)
+            if custom_state:
+                set_custom_state_from_dict(self.env, custom_state)
         self.current_step = self.env.current_step
-        # reset 
         self._reset(obs)
     
     # get observation
