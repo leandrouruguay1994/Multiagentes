@@ -51,9 +51,9 @@ class DumbAgent(Agent):
             self.counter = 0
         else:
             if self.counter <= 3:
-                self.last_action = actions[2]  # NORTH
+                self.last_action = actions[2]  # SOUTH
             else:
-                self.last_action = actions[4]  # WEST
+                self.last_action = actions[4]  # EAST
         return self.last_action
 
     
@@ -61,10 +61,10 @@ class DumbAgent(Agent):
         return self._policy
     
     def reset(self):
-            """Resetea el estado del agente para un nuevo episodio"""
-            self.current_state = self.game.observe(self.agent)
-            self.counter = 0
-            self.last_action = None
+        """Resetea el estado del agente para un nuevo episodio"""
+        self.current_state = self.game.observe(self.agent)
+        self.counter = 0
+        self.last_action = None
 
     def update(self) -> None:
         """Actualiza la política del agente"""
